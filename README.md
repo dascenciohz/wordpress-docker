@@ -36,10 +36,10 @@ Traefik uses letsencrypt to extract the certificates, which are automatically re
 
 4.- Configure Traefik config file.
 
-    3.1.- Delete this line in ./configs/traefik/traefik.toml
+    4.1.- Delete this line in ./configs/traefik/traefik.toml
           defaultEntryPoints = ["http"]
 
-    3.2.- Uncomment all lines on ./configs/traefik/traefik.toml
+    4.2.- Uncomment all lines on ./configs/traefik/traefik.toml
 
 5.- Start up.
 
