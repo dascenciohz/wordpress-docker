@@ -1,0 +1,35 @@
+debug = false
+
+logLevel = "ERROR"
+
+#defaultEntryPoints = ["http", "https"]
+defaultEntryPoints = ["http"]
+
+[traefikLog]
+  format = "json"
+[accessLog]
+  format = "json"
+
+[entryPoints]
+  [entryPoints.http]
+  address = ":80"
+#    [entryPoints.http.redirect]
+#    entrypoint = "https"
+#  [entryPoints.https]
+#  address = ":443"
+#  [entryPoints.https.tls]
+
+[retry]
+
+[docker]
+endpoint = "unix:///var/run/docker.sock"
+domain = "docker.localhost"
+exposedByDefault = false
+
+#[acme]
+#email = "sistemas@option.cl"
+#storage = "acme/certs.json"
+#entryPoint = "https"
+#onHostRule = true
+#[acme.httpChallenge]
+#entryPoint = "http"

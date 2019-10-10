@@ -1,0 +1,62 @@
+# Autor: Daniel Ascencio <daniel.ascencio.hz@gmail.com>
+
+version: '3.7'
+services:
+  ingress:
+    image: traefik:alpine
+    restart: always
+    ports:
+      - ${HTTP_PORT}:80
+      - ${HTTPS_PORT}:443
+    volumes:
+      - ingress-acme:/acme
+      - ${TRAEFIK_CONFIG}:/etc/traefik/traefik.toml:ro
+      - ${DOCKER_SOCK}:/var/run/docker.sock:ro
+    networks:
+      - wordpress
+
+  frontend:
+    image: nginx:1.17.3
+    restart: always
+    volumes:
+      - ${NGINX_CONFIG}:/etc/nginx/nginx.conf:ro
+      - website-data:/var/www/html
+    networks: 
+      - wordpress
+    labels:
+      - traefik.enable=true
+      - "traefik.frontend.rule=Host:${WORDPRESS_URL}"
+
+  backend:
+    image: wordpress:5.2.3-fpm
+    restart: always
+    environment:
+      - WORDPRESS_DB_HOST=${MYSQL_HOST}
+      - WORDPRESS_DB_USER=${MYSQL_USER}
+      - WORDPRESS_DB_PASSWORD=${MYSQL_PASSWORD}
+      - WORDPRESS_DB_NAME=${MYSQL_DATABASE}
+    volumes:
+      - ${PHP_CONFIG}:/usr/local/etc/php-fpm.d/www.conf:ro
+      - website-data:/var/www/html
+    networks:
+      - wordpress
+
+  database:
+    image: mysql:5.7
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=${MYSQL_EMPTY_PASSWORD}
+    networks:
+      - wordpress
+
+volumes:
+  website-data:
+  ingress-acme:
+
+networks:
+  wordpress:
+    driver: bridge
