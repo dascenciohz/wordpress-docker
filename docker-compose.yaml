@@ -28,7 +28,7 @@ services:
       - "traefik.frontend.rule=Host:${WORDPRESS_URL}"
 
   backend:
-    image: wordpress:5.2.3-fpm
+    image: wordpress:php7.2-fpm
     restart: always
     environment:
       - WORDPRESS_DB_HOST=${MYSQL_HOST}
